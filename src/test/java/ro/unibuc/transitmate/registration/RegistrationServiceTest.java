@@ -85,6 +85,16 @@ class RegistrationServiceTest {
         verify(userRepository, never()).save(any());
     }
 
+    @Test
+    void rejectsEmailAlreadyRegisteredIgnoringCase() {
+        when(userRepository.existsByEmailIgnoreCase("ana.pop@example.com")).thenReturn(true);
+
+        RegistrationError error = errorFor(new RegistrationRequest("ANA.POP@example.com", "parola123", true));
+
+        assertThat(error).isEqualTo(RegistrationError.DUPLICATE_EMAIL);
+        verify(userRepository, never()).save(any());
+    }
+
     private RegistrationError errorFor(RegistrationRequest request) {
         try {
             service.register(request);
