@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Autentificare - TransitMate</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<main class="card">
+    <h1>Autentificare</h1>
+
+    <div class="alert alert-error" th:if="${param.error}">Email sau parola gresite.</div>
+    <div class="alert alert-ok" th:if="${param.logout}">Te-ai deconectat.</div>
+
+    <form th:action="@{/login}" method="post">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="username" required autofocus>
+
+        <label for="password">Parola</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+
+        <button type="submit">Intra in cont</button>
+    </form>
+    <div class="nav">
+        <a class="link" th:href="@{/register}">Nu ai cont? Creeaza unul</a>
+        <a class="link" th:href="@{/}">Pagina principala</a>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TransitMate</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<main class="card">
+    <h1 th:text="'Bun venit, ' + ${roleLabel}">Bun venit</h1>
+    <p>Esti autentificat ca <strong th:text="${email}">email</strong>.</p>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Deconectare</button>
+    </form>
+</main>
+</body>
+</html>

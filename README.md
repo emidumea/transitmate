@@ -17,6 +17,19 @@ mvn spring-boot:run
 Aplicatia porneste pe http://localhost:8080. Baza de date este H2 in memorie,
 deci datele se reinitializeaza la fiecare pornire.
 
+## Conturi de test
+
+Conturile de personal sunt create direct in baza de date pana la US-32.
+Parola implicita este `Staff12345` (se poate schimba cu variabila de mediu `STAFF_PASSWORD`).
+
+| Rol | Email |
+| --- | --- |
+| Sofer | sofer@transitmate.ro |
+| Controlor | controlor@transitmate.ro |
+| Admin operator | admin@transitmate.ro |
+
+Contul de calator se creeaza din pagina "Creeaza cont".
+
 ## Teste si code coverage
 
 ```
