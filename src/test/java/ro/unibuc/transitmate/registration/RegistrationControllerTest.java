@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.transitmate.user.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -35,7 +36,7 @@ class RegistrationControllerTest {
 
     @Test
     void validRegistrationShowsConfirmationAndCreatesAccount() throws Exception {
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/register").with(csrf())
                         .param("email", "maria@example.com")
                         .param("password", "parola123")
                         .param("consent", "true"))
@@ -48,7 +49,7 @@ class RegistrationControllerTest {
 
     @Test
     void missingConsentShowsErrorAndKeepsEmail() throws Exception {
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/register").with(csrf())
                         .param("email", "maria@example.com")
                         .param("password", "parola123"))
                 .andExpect(status().isOk())
@@ -60,13 +61,22 @@ class RegistrationControllerTest {
     }
 
     @Test
-    void duplicateEmailShowsError() throws Exception {
+    void registrationWithoutCsrfTokenIsRejected() throws Exception {
         mockMvc.perform(post("/register")
+                        .param("email", "maria@example.com")
+                        .param("password", "parola123")
+                        .param("consent", "true"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void duplicateEmailShowsError() throws Exception {
+        mockMvc.perform(post("/register").with(csrf())
                 .param("email", "ion@example.com")
                 .param("password", "parola123")
                 .param("consent", "true"));
 
-        mockMvc.perform(post("/register")
+        mockMvc.perform(post("/register").with(csrf())
                         .param("email", "ION@example.com")
                         .param("password", "altaparola")
                         .param("consent", "true"))
