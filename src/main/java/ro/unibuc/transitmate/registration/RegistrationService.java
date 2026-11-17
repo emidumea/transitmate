@@ -41,6 +41,9 @@ public class RegistrationService {
         if (!request.consent()) {
             throw new RegistrationException(RegistrationError.CONSENT_REQUIRED);
         }
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new RegistrationException(RegistrationError.DUPLICATE_EMAIL);
+        }
         Instant now = clock.instant();
         User user = new User(email, passwordEncoder.encode(request.password()), Role.RIDER, now);
         user.recordConsent(now, PRIVACY_POLICY_VERSION);
