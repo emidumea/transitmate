@@ -2,6 +2,9 @@ package ro.unibuc.transitmate.registration;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.unibuc.transitmate.user.Role;
@@ -13,8 +16,10 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,5 +50,47 @@ class RegistrationServiceTest {
         assertThat(user.getConsentAt()).isEqualTo(NOW);
         assertThat(user.getPrivacyPolicyVersion()).isEqualTo(RegistrationService.PRIVACY_POLICY_VERSION);
         verify(userRepository).save(user);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"ana", "ana@", "@example.com", "ana pop@example.com", "ana@example"})
+    void rejectsInvalidEmail(String email) {
+        RegistrationError error = errorFor(new RegistrationRequest(email, "parola123", true));
+
+        assertThat(error).isEqualTo(RegistrationError.INVALID_EMAIL);
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void rejectsPasswordShorterThan8Characters() {
+        RegistrationError error = errorFor(new RegistrationRequest("ana.pop@example.com", "parola1", true));
+
+        assertThat(error).isEqualTo(RegistrationError.PASSWORD_TOO_SHORT);
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void acceptsPasswordWithExactly8Characters() {
+        User user = service.register(new RegistrationRequest("ana.pop@example.com", "parola12", true));
+
+        assertThat(user.getEmail()).isEqualTo("ana.pop@example.com");
+    }
+
+    @Test
+    void rejectsRegistrationWithoutConsent() {
+        RegistrationError error = errorFor(new RegistrationRequest("ana.pop@example.com", "parola123", false));
+
+        assertThat(error).isEqualTo(RegistrationError.CONSENT_REQUIRED);
+        verify(userRepository, never()).save(any());
+    }
+
+    private RegistrationError errorFor(RegistrationRequest request) {
+        try {
+            service.register(request);
+        } catch (RegistrationException e) {
+            return e.getError();
+        }
+        return fail("Se astepta RegistrationException pentru " + request);
     }
 }
