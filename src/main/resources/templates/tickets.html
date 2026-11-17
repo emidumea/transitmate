@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bilete si preturi - TransitMate</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<main class="card wide">
+    <h1>Bilete si preturi</h1>
+    <p>Preturile sunt in lei (RON). Reducerea de student se aplica dupa aprobarea statutului de student de catre operator.</p>
+    <table>
+        <thead>
+        <tr>
+            <th>Bilet</th>
+            <th>Tip</th>
+            <th>Pret</th>
+            <th>Valabilitate</th>
+            <th>Reducere</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="offer : ${offers}">
+            <td th:text="${offer.name()}">Bilet</td>
+            <td th:text="${offer.categoryLabel()}">Tip</td>
+            <td th:text="${offer.priceLabel()}">0,00 RON</td>
+            <td th:text="${offer.validity()}">Valabilitate</td>
+            <td th:text="${offer.studentDiscountRule()}">Reducere</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="nav"><a class="link" th:href="@{/}">Inapoi la pagina principala</a></div>
+</main>
+</body>
+</html>
