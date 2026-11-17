@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cont creat - TransitMate</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<main class="card">
+    <h1>Contul a fost creat</h1>
+    <div class="alert alert-ok">
+        Contul pentru <strong th:text="${email}">email</strong> a fost creat cu succes.
+    </div>
+    <div class="nav"><a class="link" th:href="@{/}">Inapoi la pagina principala</a></div>
+</main>
+</body>
+</html>
